@@ -1,7 +1,9 @@
 package com.github.kongchen.swagger.docgen.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.kongchen.swagger.docgen.CustomOperation;
 import com.github.kongchen.swagger.docgen.LogAdapter;
+import com.github.kongchen.swagger.docgen.annotations.Priority;
 import io.swagger.annotations.*;
 import io.swagger.converter.ModelConverters;
 import io.swagger.jaxrs.ext.SwaggerExtension;
@@ -115,6 +117,12 @@ public class JaxrsReader extends AbstractReader implements ClassSwaggerReader {
                 httpMethod = httpMethod == null ? parentMethod : httpMethod;
                 updateTagsForOperation(operation, apiOperation);
                 updateOperation(apiConsumes, apiProduces, tags, securities, operation);
+
+                Priority priority = method.getAnnotation(Priority.class);
+                if (priority != null) {
+                    ((CustomOperation) operation).setPriority(priority.value());
+                }
+
                 updatePath(operationPath, httpMethod, operation);
 
             }
@@ -177,7 +185,7 @@ public class JaxrsReader extends AbstractReader implements ClassSwaggerReader {
 
 
     public Operation parseMethod(Method method) {
-        Operation operation = new Operation();
+        Operation operation = new CustomOperation();
 
         ApiOperation apiOperation = (ApiOperation) method.getAnnotation(ApiOperation.class);
 

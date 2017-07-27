@@ -66,7 +66,7 @@ public abstract class AbstractDocumentSource {
         this.modelSubstitute = apiSource.getModelSubstitute();
         this.jsonExampleValues = apiSource.isJsonExampleValues();
 
-        swagger = new Swagger();
+        swagger = new CustomSwagger();
         if (apiSource.getSchemes() != null) {
             if (apiSource.getSchemes().contains(",")) {
                 for (String scheme : apiSource.getSchemes().split(",")) {
