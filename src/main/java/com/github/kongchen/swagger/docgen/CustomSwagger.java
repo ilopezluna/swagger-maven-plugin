@@ -1,13 +1,16 @@
 package com.github.kongchen.swagger.docgen;
 
 import io.swagger.models.Path;
+import io.swagger.models.Tag;
 
 import java.util.*;
 
 public class CustomSwagger extends io.swagger.models.Swagger {
 
 
-    public Map<String, Path> getPaths() {
+	private String[] tagSorted;
+
+	public Map<String, Path> getPaths() {
         if (this.paths == null) {
             return null;
         } else {
@@ -40,4 +43,30 @@ public class CustomSwagger extends io.swagger.models.Swagger {
 		};
 	}
 
+	public void setTagSorted(String[] tagSorted) {
+		this.tagSorted = tagSorted;
+	}
+
+	public String[] getTagSorted() {
+		return tagSorted;
+	}
+
+	@Override
+	public List<Tag> getTags() {
+
+		final List<Tag> result = new ArrayList<Tag>();
+		final List<Tag> tags = super.getTags();
+
+		for (String tagName : tagSorted) {
+
+			for (Tag tag : tags) {
+				if (tag.getName().equals(tagName)) {
+					result.add(tag);
+				}
+			}
+
+		}
+
+		return result;
+	}
 }

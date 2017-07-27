@@ -2,8 +2,10 @@ package com.github.kongchen.swagger.docgen.reader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kongchen.swagger.docgen.CustomOperation;
+import com.github.kongchen.swagger.docgen.CustomSwagger;
 import com.github.kongchen.swagger.docgen.LogAdapter;
 import com.github.kongchen.swagger.docgen.annotations.Priority;
+import com.github.kongchen.swagger.docgen.annotations.TagsSorted;
 import io.swagger.annotations.*;
 import io.swagger.converter.ModelConverters;
 import io.swagger.jaxrs.ext.SwaggerExtension;
@@ -53,8 +55,15 @@ public class JaxrsReader extends AbstractReader implements ClassSwaggerReader {
     }
 
     protected Swagger read(Class<?> cls, String parentPath, String parentMethod, boolean readHidden, String[] parentConsumes, String[] parentProduces, Map<String, Tag> parentTags, List<Parameter> parentParameters) {
-        if (swagger == null)
-            swagger = new Swagger();
+        if (swagger == null) {
+            swagger = new CustomSwagger();
+        }
+
+        TagsSorted tagsSorted = cls.getAnnotation(TagsSorted.class);
+        if (tagsSorted != null && ((CustomSwagger) swagger).getTagSorted() == null) {
+            ((CustomSwagger) swagger).setTagSorted(tagsSorted.tags());
+        }
+
         Api api = cls.getAnnotation(Api.class);
         Map<String, SecurityScope> globalScopes = new HashMap<String, SecurityScope>();
 
